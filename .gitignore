@@ -98,4 +98,5 @@ logs/
 # Archivos de control de etapas (solo para desarrollo local)
 ETAPA*_COMPLETADA.md
 INSTRUCCIONES_MYSQL.md
+ESPECIFICACIONES_PROYECTO.md
 pom.xml.example
