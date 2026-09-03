@@ -1,0 +1,101 @@
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files (excluir compilados, pero NO las librerías en /lib)
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+target/
+
+# IDE - Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# IDE - NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# IDE - VS Code (excluir configuraciones personales, mantener settings del proyecto)
+*.code-workspace
+.vscode/launch.json
+.vscode/tasks.json
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Database configuration (sensitive)
+src/main/java/com/sica/database/DatabaseConfig.java
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Gradle
+.gradle/
+build/
+gradle-app.setting
+!gradle-wrapper.jar
+
+# Application logs
+logs/
+*.log
+
+# Database backups
+*.sql.backup
+*.db
+*.sqlite
+
+# Archivos de control de etapas (solo para desarrollo local)
+ETAPA*_COMPLETADA.md
+INSTRUCCIONES_MYSQL.md
+pom.xml.example

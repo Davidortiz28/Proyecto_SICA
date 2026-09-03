@@ -1,0 +1,44 @@
+package com.sica.database;
+
+/**
+ * Configuración de la conexión a la base de datos.
+ * 
+ * INSTRUCCIONES:
+ * 1. Renombra este archivo a "DatabaseConfig.java" (elimina el .example)
+ * 2. Actualiza los valores con tu configuración local
+ * 3. Este archivo está en .gitignore para proteger credenciales
+ * 
+ * NOTA: En un sistema real, estas credenciales deberían obtenerse de
+ * variables de entorno o un gestor de secretos (Vault, AWS Secrets Manager, etc.)
+ */
+public class DatabaseConfig {
+    
+    // URL de conexión a la base de datos
+    // Formato: jdbc:mysql://[host]:[puerto]/[nombre_base_datos]
+    public static final String URL = "jdbc:mysql://localhost:3306/sica";
+    
+    // Usuario de la base de datos
+    public static final String USER = "root";
+    
+    // Contraseña de la base de datos
+    public static final String PASSWORD = "tu_contraseña_aqui";
+    
+    // Driver JDBC de MySQL
+    public static final String DRIVER = "com.mysql.cj.jdbc.Driver";
+    
+    // Configuración adicional de la conexión
+    public static final String CONNECTION_OPTIONS = 
+        "?useSSL=false" +                    // Desactivar SSL (solo desarrollo)
+        "&serverTimezone=UTC" +              // Zona horaria
+        "&allowPublicKeyRetrieval=true" +   // Permitir recuperación de clave pública
+        "&useUnicode=true" +                // Usar Unicode
+        "&characterEncoding=utf8mb4";       // Codificación de caracteres
+    
+    // URL completa con opciones
+    public static final String FULL_URL = URL + CONNECTION_OPTIONS;
+    
+    // Configuración del pool de conexiones (para uso futuro)
+    public static final int MAX_POOL_SIZE = 10;
+    public static final int MIN_POOL_SIZE = 2;
+    public static final int CONNECTION_TIMEOUT = 30000; // 30 segundos
+}
