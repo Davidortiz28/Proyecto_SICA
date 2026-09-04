@@ -227,7 +227,7 @@ public class Persona {
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", documentoIdentidad='" + documentoIdentidad + '\'' +
-                ", empresa=" + (empresa != null ? empresa.getNombre() : "Sin empresa") +
+                ", empresa=" + (empresa != null ? empresa.getNombreEmpresa() : "Sin empresa") +
                 ", tipoPersona=" + tipoPersona +
                 ", estadoAcceso=" + (estadoAcceso != null ? estadoAcceso.getNombreEstado() : "Sin estado") +
                 '}';

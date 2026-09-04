@@ -90,12 +90,14 @@ CREATE TABLE visita_estados (
 -- Descripción: Empresas del complejo Zona Acme
 CREATE TABLE empresas (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    contacto_principal VARCHAR(100),
+    nombre_empresa VARCHAR(100) NOT NULL,
+    nit VARCHAR(50) NOT NULL UNIQUE,
     telefono VARCHAR(20),
     email VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    direccion VARCHAR(255),
+    esta_activa BOOLEAN DEFAULT TRUE,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabla: personas
@@ -196,7 +198,7 @@ SELECT
     p.nombre,
     p.documento_identidad,
     p.tipo_persona,
-    e.nombre AS empresa,
+    e.nombre_empresa AS empresa,
     v.id AS visita_id,
     v.fecha_entrada,
     v.vehiculo_placa
@@ -214,7 +216,7 @@ SELECT
     p.nombre AS persona_nombre,
     p.documento_identidad,
     p.tipo_persona,
-    e.nombre AS empresa,
+    e.nombre_empresa AS empresa,
     v.motivo_visita,
     v.created_at AS fecha_solicitud,
     ve.nombre_estado AS estado
@@ -232,7 +234,7 @@ SELECT
     p.nombre,
     p.documento_identidad,
     p.tipo_persona,
-    e.nombre AS empresa,
+    e.nombre_empresa AS empresa,
     v.fecha_entrada,
     v.fecha_salida,
     ve.nombre_estado AS estado,

@@ -148,15 +148,15 @@ INSERT INTO usuarios (nombre, email, password, rol_id, esta_activo) VALUES
 -- DATOS: EMPRESAS
 -- ============================================================================
 
-INSERT INTO empresas (nombre, contacto_principal, telefono, email) VALUES
-('Tech Solutions S.A.', 'Roberto Gómez', '+1-555-0101', 'contacto@techsolutions.com'),
-('Marketing Global Inc.', 'Sofía Morales', '+1-555-0102', 'info@marketingglobal.com'),
-('Consulting Partners', 'Diego Torres', '+1-555-0103', 'admin@consultingpartners.com'),
-('Design Studio', 'Carmen Ruiz', '+1-555-0104', 'hello@designstudio.com'),
-('Financial Services Corp.', 'Andrés Vega', '+1-555-0105', 'contact@financialservices.com'),
-('Legal Associates', 'Patricia Medina', '+1-555-0106', 'info@legalassociates.com'),
-('Engineering Works', 'Miguel Castro', '+1-555-0107', 'team@engineeringworks.com'),
-('Health Care Solutions', 'Elena Romero', '+1-555-0108', 'support@healthcare.com');
+INSERT INTO empresas (nombre_empresa, nit, telefono, email, direccion) VALUES
+('Tech Solutions S.A.', '900123456-1', '+1-555-0101', 'contacto@techsolutions.com', 'Zona Acme, Edificio A-101'),
+('Marketing Global Inc.', '900234567-2', '+1-555-0102', 'info@marketingglobal.com', 'Zona Acme, Edificio B-205'),
+('Consulting Partners', '900345678-3', '+1-555-0103', 'admin@consultingpartners.com', 'Zona Acme, Edificio C-310'),
+('Design Studio', '900456789-4', '+1-555-0104', 'hello@designstudio.com', 'Zona Acme, Edificio A-150'),
+('Financial Services Corp.', '900567890-5', '+1-555-0105', 'contact@financialservices.com', 'Zona Acme, Edificio D-401'),
+('Legal Associates', '900678901-6', '+1-555-0106', 'info@legalassociates.com', 'Zona Acme, Edificio B-250'),
+('Engineering Works', '900789012-7', '+1-555-0107', 'team@engineeringworks.com', 'Zona Acme, Edificio C-360'),
+('Health Care Solutions', '900890123-8', '+1-555-0108', 'support@healthcare.com', 'Zona Acme, Edificio D-450');
 
 -- ============================================================================
 -- DATOS: PERSONAS (Trabajadores)
