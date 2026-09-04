@@ -27,7 +27,7 @@ public class PersonaRepository implements BaseRepository<Persona, Integer> {
     
     private final DatabaseConnection dbConnection;
     
-    public PersonaRepository() {
+    public PersonaRepository() throws SQLException {
         this.dbConnection = DatabaseConnection.getInstance();
     }
     
@@ -55,7 +55,7 @@ public class PersonaRepository implements BaseRepository<Persona, Integer> {
             
             stmt.setString(5, persona.getTelefono());
             stmt.setString(6, persona.getEmail());
-            stmt.setString(7, persona.getFotoUrl());
+            stmt.setString(7, persona.getUrlFoto());
             stmt.setInt(8, persona.getEstadoAcceso().getId());
             
             int affectedRows = stmt.executeUpdate();
@@ -108,7 +108,7 @@ public class PersonaRepository implements BaseRepository<Persona, Integer> {
             
             stmt.setString(5, persona.getTelefono());
             stmt.setString(6, persona.getEmail());
-            stmt.setString(7, persona.getFotoUrl());
+            stmt.setString(7, persona.getUrlFoto());
             stmt.setInt(8, persona.getEstadoAcceso().getId());
             stmt.setInt(9, persona.getId());
             
@@ -123,7 +123,7 @@ public class PersonaRepository implements BaseRepository<Persona, Integer> {
     }
     
     @Override
-    public void delete(Integer id) throws SQLException {
+    public boolean delete(Integer id) throws SQLException {
         String sql = "DELETE FROM personas WHERE id = ?";
         
         try (Connection conn = dbConnection.getConnection();
@@ -132,10 +132,7 @@ public class PersonaRepository implements BaseRepository<Persona, Integer> {
             stmt.setInt(1, id);
             
             int affectedRows = stmt.executeUpdate();
-            
-            if (affectedRows == 0) {
-                throw new SQLException("Error al eliminar persona, persona no encontrada");
-            }
+            return affectedRows > 0;
         }
     }
     
@@ -381,6 +378,41 @@ public class PersonaRepository implements BaseRepository<Persona, Integer> {
         return personas;
     }
     
+    @Override
+    public boolean existsById(Integer id) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM personas WHERE id = ?";
+        
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, id);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    @Override
+    public long count() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM personas";
+        
+        try (Connection conn = dbConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            if (rs.next()) {
+                return rs.getLong(1);
+            }
+        }
+        
+        return 0;
+    }
+    
     /**
      * Mapea un ResultSet a una entidad Persona.
      * 
@@ -397,12 +429,12 @@ public class PersonaRepository implements BaseRepository<Persona, Integer> {
         persona.setTipoPersona(TipoPersona.valueOf(rs.getString("tipo_persona")));
         persona.setTelefono(rs.getString("telefono"));
         persona.setEmail(rs.getString("email"));
-        persona.setFotoUrl(rs.getString("foto_url"));
-        persona.setFechaRegistro(rs.getTimestamp("fecha_registro").toLocalDateTime());
+        persona.setUrlFoto(rs.getString("url_foto"));
+        persona.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         
-        Timestamp fechaActualizacion = rs.getTimestamp("fecha_actualizacion");
-        if (fechaActualizacion != null) {
-            persona.setFechaActualizacion(fechaActualizacion.toLocalDateTime());
+        Timestamp updatedAt = rs.getTimestamp("updated_at");
+        if (updatedAt != null) {
+            persona.setUpdatedAt(updatedAt.toLocalDateTime());
         }
         
         // Mapear empresa si existe
@@ -419,7 +451,7 @@ public class PersonaRepository implements BaseRepository<Persona, Integer> {
         PersonaEstadoAcceso estadoAcceso = new PersonaEstadoAcceso();
         estadoAcceso.setId(rs.getInt("estado_id"));
         estadoAcceso.setNombreEstado(rs.getString("nombre_estado"));
-        estadoAcceso.setPermiteAcceso(rs.getBoolean("permite_acceso"));
+        estadoAcceso.setNombreEstado(rs.getString("nombre_estado"));
         persona.setEstadoAcceso(estadoAcceso);
         
         return persona;

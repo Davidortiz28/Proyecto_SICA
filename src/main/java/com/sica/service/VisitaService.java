@@ -56,7 +56,7 @@ public class VisitaService {
     private static final int ESTADO_RECHAZADO_ID = 5;
     private static final int ESTADO_CERRADA_POR_SISTEMA_ID = 7;
     
-    public VisitaService() {
+    public VisitaService() throws SQLException {
         this.visitaRepository = new VisitaRepository();
         this.personaRepository = new PersonaRepository();
         this.authorizationService = new AuthorizationService();
@@ -83,7 +83,7 @@ public class VisitaService {
             Visita nuevaVisita = visitaRepository.save(visita);
             
             auditoriaService.registrar(
-                AccionAuditoria.REGISTRAR_VISITA,
+                AccionAuditoria.CREACION_VISITA,
                 "visitas",
                 nuevaVisita.getId(),
                 String.format("Visita creada: %s (Doc: %s, Estado: %s)", 

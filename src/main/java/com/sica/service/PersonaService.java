@@ -40,7 +40,7 @@ public class PersonaService {
     /**
      * Constructor con inyección de dependencias.
      */
-    public PersonaService() {
+    public PersonaService() throws SQLException {
         this.personaRepository = new PersonaRepository();
         this.authorizationService = new AuthorizationService();
         this.auditoriaService = new AuditoriaService();
@@ -398,7 +398,6 @@ public class PersonaService {
         PersonaEstadoAcceso estadoBloqueado = new PersonaEstadoAcceso();
         estadoBloqueado.setId(2);
         estadoBloqueado.setNombreEstado("Con Prohibición de Ingreso");
-        estadoBloqueado.setPermiteAcceso(false);
         
         cambiarEstadoAcceso(personaId, estadoBloqueado);
     }
@@ -417,7 +416,6 @@ public class PersonaService {
         PersonaEstadoAcceso estadoActivo = new PersonaEstadoAcceso();
         estadoActivo.setId(1);
         estadoActivo.setNombreEstado("Activo");
-        estadoActivo.setPermiteAcceso(true);
         
         cambiarEstadoAcceso(personaId, estadoActivo);
     }

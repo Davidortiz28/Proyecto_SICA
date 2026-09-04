@@ -39,7 +39,7 @@ public class UsuarioService {
     /**
      * Constructor con inyección de dependencias.
      */
-    public UsuarioService() {
+    public UsuarioService() throws SQLException {
         this.usuarioRepository = new UsuarioRepository();
         this.authorizationService = new AuthorizationService();
         this.auditoriaService = new AuditoriaService();
@@ -130,7 +130,7 @@ public class UsuarioService {
             
             // No puede desactivar su propio usuario
             Usuario usuarioActual = sessionManager.getUsuarioActual();
-            if (usuarioActual.getId().equals(usuario.getId()) && !usuario.getEstaActivo()) {
+            if (usuarioActual.getId().equals(usuario.getId()) && !usuario.isEstaActivo()) {
                 throw new SicaException("No puede desactivar su propio usuario");
             }
             

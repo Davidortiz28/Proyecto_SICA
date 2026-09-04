@@ -22,7 +22,7 @@ public class IncidenteRepository implements BaseRepository<Incidente, Integer> {
     
     private final DatabaseConnection dbConnection;
     
-    public IncidenteRepository() {
+    public IncidenteRepository() throws SQLException {
         this.dbConnection = DatabaseConnection.getInstance();
     }
     
@@ -107,7 +107,7 @@ public class IncidenteRepository implements BaseRepository<Incidente, Integer> {
     }
     
     @Override
-    public void delete(Integer id) throws SQLException {
+    public boolean delete(Integer id) throws SQLException {
         String sql = "DELETE FROM incidentes WHERE id = ?";
         
         try (Connection conn = dbConnection.getConnection();
@@ -116,10 +116,7 @@ public class IncidenteRepository implements BaseRepository<Incidente, Integer> {
             stmt.setInt(1, id);
             
             int affectedRows = stmt.executeUpdate();
-            
-            if (affectedRows == 0) {
-                throw new SQLException("Error al eliminar incidente, incidente no encontrado");
-            }
+            return affectedRows > 0;
         }
     }
     
@@ -264,5 +261,40 @@ public class IncidenteRepository implements BaseRepository<Incidente, Integer> {
         incidente.setReportadoPor(reportador);
         
         return incidente;
+    }
+    
+    @Override
+    public boolean existsById(Integer id) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM incidentes WHERE id = ?";
+        
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, id);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    @Override
+    public long count() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM incidentes";
+        
+        try (Connection conn = dbConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            if (rs.next()) {
+                return rs.getLong(1);
+            }
+        }
+        
+        return 0;
     }
 }

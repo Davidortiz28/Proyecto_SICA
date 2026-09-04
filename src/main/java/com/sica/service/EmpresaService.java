@@ -37,7 +37,7 @@ public class EmpresaService {
     /**
      * Constructor con inyección de dependencias.
      */
-    public EmpresaService() {
+    public EmpresaService() throws SQLException {
         this.empresaRepository = new EmpresaRepository();
         this.authorizationService = new AuthorizationService();
         this.auditoriaService = new AuditoriaService();

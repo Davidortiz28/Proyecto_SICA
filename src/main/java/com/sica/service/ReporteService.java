@@ -45,7 +45,7 @@ public class ReporteService {
     private static final DateTimeFormatter FORMATO_FECHA = 
         DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     
-    public ReporteService() {
+    public ReporteService() throws SQLException {
         this.visitaRepository = new VisitaRepository();
         this.personaRepository = new PersonaRepository();
         this.incidenteRepository = new IncidenteRepository();

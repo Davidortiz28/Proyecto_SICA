@@ -31,7 +31,7 @@ public class IncidenteService {
     private final AuditoriaService auditoriaService;
     private final SessionManager sessionManager;
     
-    public IncidenteService() {
+    public IncidenteService() throws SQLException {
         this.incidenteRepository = new IncidenteRepository();
         this.authorizationService = new AuthorizationService();
         this.auditoriaService = new AuditoriaService();

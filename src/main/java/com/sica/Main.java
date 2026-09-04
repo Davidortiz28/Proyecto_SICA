@@ -6,6 +6,7 @@ import com.sica.model.enums.TipoPersona;
 import com.sica.service.*;
 import com.sica.security.SessionManager;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -32,14 +33,14 @@ public class Main {
     private static final SessionManager sessionManager = SessionManager.getInstance();
     
     // Services
-    private static final AuthService authService = new AuthService();
-    private static final AuthorizationService authzService = new AuthorizationService();
-    private static final UsuarioService usuarioService = new UsuarioService();
-    private static final EmpresaService empresaService = new EmpresaService();
-    private static final PersonaService personaService = new PersonaService();
-    private static final VisitaService visitaService = new VisitaService();
-    private static final IncidenteService incidenteService = new IncidenteService();
-    private static final ReporteService reporteService = new ReporteService();
+    private static AuthService authService;
+    private static AuthorizationService authzService;
+    private static UsuarioService usuarioService;
+    private static EmpresaService empresaService;
+    private static PersonaService personaService;
+    private static VisitaService visitaService;
+    private static IncidenteService incidenteService;
+    private static ReporteService reporteService;
     
     private static final DateTimeFormatter FORMATO_FECHA = 
         DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -49,6 +50,10 @@ public class Main {
         
         if (!verificarConexionBD()) {
             mostrarErrorConexion();
+            return;
+        }
+        
+        if (!inicializarServicios()) {
             return;
         }
         
@@ -95,6 +100,23 @@ public class Main {
         System.out.println("  3. DatabaseConfig.java tiene las credenciales correctas");
     }
     
+    private static boolean inicializarServicios() {
+        try {
+            authService = new AuthService();
+            authzService = new AuthorizationService();
+            usuarioService = new UsuarioService();
+            empresaService = new EmpresaService();
+            personaService = new PersonaService();
+            visitaService = new VisitaService();
+            incidenteService = new IncidenteService();
+            reporteService = new ReporteService();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("❌ Error al inicializar los servicios del sistema: " + e.getMessage());
+            return false;
+        }
+    }
+    
     private static void mostrarDespedida() {
         System.out.println("\n═══════════════════════════════════════════════════════════════");
         System.out.println("   ¡Gracias por usar SICA!");
@@ -134,7 +156,7 @@ public class Main {
             System.out.println("   Rol: " + usuario.getRol().getNombreRol());
             pausa();
             return true;
-        } catch (SicaException e) {
+        } catch (SicaException | SQLException e) {
             System.out.println("\n❌ ERROR: " + e.getMessage());
             return preguntarReintentar();
         }
@@ -816,7 +838,7 @@ public class Main {
             authService.logout();
             System.out.println("\n✅ Sesión cerrada exitosamente");
             pausa();
-        } catch (SicaException e) {
+        } catch (SQLException e) {
             System.out.println("\n❌ ERROR al cerrar sesión: " + e.getMessage());
             pausa();
         }
