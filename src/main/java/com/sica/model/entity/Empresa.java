@@ -14,12 +14,14 @@ import java.time.LocalDateTime;
  */
 public class Empresa {
     private Integer id;
-    private String nombre;
-    private String contactoPrincipal;
+    private String nombreEmpresa;
+    private String nit;
     private String telefono;
     private String email;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String direccion;
+    private Boolean estaActiva;
+    private LocalDateTime fechaRegistro;
+    private LocalDateTime fechaActualizacion;
     
     /**
      * Constructor vacío
@@ -30,29 +32,13 @@ public class Empresa {
     /**
      * Constructor con parámetros principales
      * 
-     * @param nombre Nombre de la empresa
-     * @param contactoPrincipal Nombre del contacto principal
+     * @param nombreEmpresa Nombre de la empresa
+     * @param nit NIT de la empresa
      */
-    public Empresa(String nombre, String contactoPrincipal) {
-        this.nombre = nombre;
-        this.contactoPrincipal = contactoPrincipal;
-    }
-    
-    /**
-     * Constructor completo
-     * 
-     * @param id ID de la empresa
-     * @param nombre Nombre de la empresa
-     * @param contactoPrincipal Nombre del contacto principal
-     * @param telefono Teléfono de contacto
-     * @param email Email de contacto
-     */
-    public Empresa(Integer id, String nombre, String contactoPrincipal, String telefono, String email) {
-        this.id = id;
-        this.nombre = nombre;
-        this.contactoPrincipal = contactoPrincipal;
-        this.telefono = telefono;
-        this.email = email;
+    public Empresa(String nombreEmpresa, String nit) {
+        this.nombreEmpresa = nombreEmpresa;
+        this.nit = nit;
+        this.estaActiva = true;
     }
     
     // Getters y Setters
@@ -65,20 +51,52 @@ public class Empresa {
         this.id = id;
     }
     
-    public String getNombre() {
-        return nombre;
+    public String getNombreEmpresa() {
+        return nombreEmpresa;
     }
     
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombreEmpresa(String nombreEmpresa) {
+        this.nombreEmpresa = nombreEmpresa;
     }
     
-    public String getContactoPrincipal() {
-        return contactoPrincipal;
+    public String getNit() {
+        return nit;
     }
     
-    public void setContactoPrincipal(String contactoPrincipal) {
-        this.contactoPrincipal = contactoPrincipal;
+    public void setNit(String nit) {
+        this.nit = nit;
+    }
+    
+    public String getDireccion() {
+        return direccion;
+    }
+    
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+    
+    public Boolean getEstaActiva() {
+        return estaActiva;
+    }
+    
+    public void setEstaActiva(Boolean estaActiva) {
+        this.estaActiva = estaActiva;
+    }
+    
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
+    }
+    
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+    
+    public LocalDateTime getFechaActualizacion() {
+        return fechaActualizacion;
+    }
+    
+    public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
+        this.fechaActualizacion = fechaActualizacion;
     }
     
     public String getTelefono() {
@@ -97,30 +115,17 @@ public class Empresa {
         this.email = email;
     }
     
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-    
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+
     
     @Override
     public String toString() {
         return "Empresa{" +
                 "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", contactoPrincipal='" + contactoPrincipal + '\'' +
+                ", nombreEmpresa='" + nombreEmpresa + '\'' +
+                ", nit='" + nit + '\'' +
                 ", telefono='" + telefono + '\'' +
                 ", email='" + email + '\'' +
+                ", estaActiva=" + estaActiva +
                 '}';
     }
     

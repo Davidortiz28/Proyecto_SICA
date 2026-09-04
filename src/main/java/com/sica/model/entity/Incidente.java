@@ -20,6 +20,7 @@ public class Incidente {
     private String descripcion;
     private String tipoIncidente;
     private NivelGravedad nivelGravedad;
+    private String estadoResolucion;  // Pendiente, En Proceso, Resuelto
     private LocalDateTime createdAt;
     
     /**
@@ -157,6 +158,67 @@ public class Incidente {
     }
     
     // Métodos de negocio
+    
+    /**
+     * Obtiene la gravedad como String (para compatibilidad con IncidenteService)
+     */
+    public String getGravedad() {
+        return nivelGravedad != null ? nivelGravedad.getDescripcion() : "Medio";
+    }
+    
+    /**
+     * Establece la gravedad desde String
+     */
+    public void setGravedad(String gravedad) {
+        switch (gravedad) {
+            case "Baja":
+            case "Bajo":
+                this.nivelGravedad = NivelGravedad.BAJO;
+                break;
+            case "Media":
+            case "Medio":
+                this.nivelGravedad = NivelGravedad.MEDIO;
+                break;
+            case "Alta":
+            case "Alto":
+                this.nivelGravedad = NivelGravedad.ALTO;
+                break;
+            case "Crítica":
+            case "Crítico":
+                this.nivelGravedad = NivelGravedad.CRITICO;
+                break;
+            default:
+                this.nivelGravedad = NivelGravedad.MEDIO;
+        }
+    }
+    
+    /**
+     * Obtiene la fecha del incidente
+     */
+    public LocalDateTime getFechaIncidente() {
+        return fecha;
+    }
+    
+    /**
+     * Establece la fecha del incidente
+     */
+    public void setFechaIncidente(LocalDateTime fecha) {
+        this.fecha = fecha;
+    }
+    
+    /**
+     * Obtiene el estado de resolución (para compatibilidad con IncidenteRepository)
+     */
+    public String getEstadoResolucion() {
+        return estadoResolucion;
+    }
+    
+    /**
+     * Establece el estado de resolución
+     */
+    public void setEstadoResolucion(String estado) {
+        this.estadoResolucion = estado;
+    }
     
     /**
      * Verifica si el incidente tiene visita asociada
