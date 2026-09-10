@@ -820,6 +820,31 @@ GUARDA:
 5. Sistema genera y muestra reporte
 ```
 
+### 7. Generar Reporte de Ocupación por Hora
+```
+1. Login como Supervisor de Seguridad (o rol con permiso "generar_reporte")
+2. Seleccionar "Reportes"
+3. Seleccionar "⭐ Reporte de Ocupación por Hora"
+4. Ingresar fecha a analizar (formato dd/MM/yyyy)
+5. Sistema analiza las 24 horas del día especificado
+6. Sistema muestra:
+   - Tabla con ocupación por franja horaria (00:00 - 23:59)
+   - Número de personas dentro en cada hora
+   - Estadísticas de ocupación máxima
+   - Identificación de horas pico
+7. Resultado puede usarse para:
+   - Optimizar asignación de personal de seguridad
+   - Planificar horarios de limpieza
+   - Identificar patrones de afluencia
+   - Toma de decisiones operativas
+
+Casos Especiales Manejados:
+- ✅ Visitas que abarcan múltiples horas
+- ✅ Visitas iniciadas antes del día analizado que continúan en él
+- ✅ Visitas sin fecha de salida (aún dentro)
+- ✅ Visitas que inician en el día pero finalizan después
+```
+
 ---
 
 ## 🔄 Git Flow

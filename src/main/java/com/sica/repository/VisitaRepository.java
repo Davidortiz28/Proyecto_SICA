@@ -477,4 +477,61 @@ public class VisitaRepository implements BaseRepository<Visita, Integer> {
         
         return 0;
     }
+    
+    /**
+     * Busca todas las visitas que se superponen con un día específico.
+     * Incluye visitas que:
+     * - Comenzaron y terminaron en el día
+     * - Comenzaron antes pero continuaron en el día
+     * - Comenzaron en el día pero no han finalizado (fecha_salida null)
+     * - Comenzaron en el día pero finalizaron después
+     * 
+     * @param fecha Fecha del día a analizar
+     * @return Lista de visitas relevantes para el análisis de ocupación
+     * @throws SQLException si hay error en la consulta
+     */
+    public List<Visita> findVisitasParaDia(java.time.LocalDate fecha) throws SQLException {
+        String sql = """
+            SELECT v.id, v.persona_id, v.fecha_entrada, v.fecha_salida, v.estado_visita_id,
+                   v.vehiculo_placa, v.visita_aprobada_por, v.motivo_visita, v.observaciones,
+                   v.created_at, v.updated_at,
+                   p.nombre as persona_nombre, p.documento_identidad, p.tipo_persona,
+                   ve.id as estado_id, ve.nombre_estado, ve.descripcion as estado_desc,
+                   u.id as aprobador_id, u.nombre as aprobador_nombre
+            FROM visitas v
+            INNER JOIN personas p ON v.persona_id = p.id
+            INNER JOIN visita_estados ve ON v.estado_visita_id = ve.id
+            LEFT JOIN usuarios u ON v.visita_aprobada_por = u.id
+            WHERE v.fecha_entrada IS NOT NULL
+              AND (
+                  -- Entrada en el día
+                  DATE(v.fecha_entrada) = ?
+                  -- O entrada antes del día pero sin salida (aún dentro)
+                  OR (DATE(v.fecha_entrada) < ? AND v.fecha_salida IS NULL)
+                  -- O entrada antes del día pero salida en o después del día
+                  OR (DATE(v.fecha_entrada) < ? AND DATE(v.fecha_salida) >= ?)
+              )
+            ORDER BY v.fecha_entrada ASC
+            """;
+        
+        List<Visita> visitas = new ArrayList<>();
+        
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            java.sql.Date sqlDate = java.sql.Date.valueOf(fecha);
+            stmt.setDate(1, sqlDate);
+            stmt.setDate(2, sqlDate);
+            stmt.setDate(3, sqlDate);
+            stmt.setDate(4, sqlDate);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    visitas.add(mapResultSetToVisita(rs));
+                }
+            }
+        }
+        
+        return visitas;
+    }
 }
