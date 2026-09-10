@@ -318,6 +318,120 @@ public class ReporteService {
     }
     
     /**
+     * Genera reporte de ocupación por hora para una fecha específica.
+     * Analiza las 24 horas del día y calcula cuántas personas estuvieron
+     * dentro del complejo en cada franja horaria.
+     * 
+     * Permisos: requiere "generar_reporte"
+     * 
+     * @param fecha Fecha del día a analizar
+     * @return String con el reporte formateado
+     * @throws PermisoDenegadoException si no tiene permiso
+     * @throws SicaException si hay error
+     */
+    public String reporteOcupacionPorHora(java.time.LocalDate fecha) throws SicaException {
+        authorizationService.requirePermiso("generar_reporte");
+        
+        try {
+            // Obtener todas las visitas relevantes para el día
+            List<Visita> visitas = visitaRepository.findVisitasParaDia(fecha);
+            
+            // Calcular ocupación para cada hora del día (0-23)
+            Map<Integer, Long> ocupacionPorHora = new java.util.TreeMap<>();
+            
+            for (int hora = 0; hora < 24; hora++) {
+                final int horaActual = hora;
+                
+                // Definir el intervalo de la hora actual
+                java.time.LocalDateTime inicioHora = fecha.atTime(horaActual, 0);
+                java.time.LocalDateTime finHora = fecha.atTime(horaActual, 59, 59);
+                
+                // Contar cuántas visitas se superponen con esta hora
+                long count = visitas.stream()
+                    .filter(v -> visitaSeSuperponeConIntervalo(v, inicioHora, finHora))
+                    .count();
+                
+                ocupacionPorHora.put(hora, count);
+            }
+            
+            // Generar el reporte formateado
+            StringBuilder reporte = new StringBuilder();
+            reporte.append("\n");
+            reporte.append("        REPORTE DE OCUPACIÓN - FECHA: ").append(fecha).append("\n");
+            reporte.append("---------------------------------------------------------\n");
+            reporte.append("| Franja Horaria      | Número de Personas Dentro        |\n");
+            reporte.append("---------------------------------------------------------\n");
+            
+            ocupacionPorHora.forEach((hora, cantidad) -> {
+                String franjaHoraria = String.format("%02d:00 - %02d:59", hora, hora);
+                reporte.append(String.format("| %-19s | %-32d |\n", franjaHoraria, cantidad));
+            });
+            
+            reporte.append("---------------------------------------------------------\n");
+            
+            // Estadísticas adicionales
+            long totalVisitas = visitas.size();
+            long maxOcupacion = ocupacionPorHora.values().stream()
+                .mapToLong(Long::longValue)
+                .max()
+                .orElse(0);
+            
+            List<Integer> horasPico = ocupacionPorHora.entrySet().stream()
+                .filter(e -> e.getValue() == maxOcupacion)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+            
+            reporte.append("\nESTADÍSTICAS:\n");
+            reporte.append(String.format("  - Total de visitas analizadas: %d\n", totalVisitas));
+            reporte.append(String.format("  - Ocupación máxima: %d personas\n", maxOcupacion));
+            reporte.append("  - Hora(s) pico: ");
+            reporte.append(horasPico.stream()
+                .map(h -> String.format("%02d:00", h))
+                .collect(Collectors.joining(", ")));
+            reporte.append("\n");
+            
+            return reporte.toString();
+            
+        } catch (SQLException e) {
+            throw new SicaException("Error al generar reporte de ocupación: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Verifica si una visita se superpone con un intervalo de tiempo específico.
+     * 
+     * @param visita Visita a verificar
+     * @param inicioIntervalo Inicio del intervalo
+     * @param finIntervalo Fin del intervalo
+     * @return true si hay superposición, false en caso contrario
+     */
+    private boolean visitaSeSuperponeConIntervalo(Visita visita, 
+                                                  java.time.LocalDateTime inicioIntervalo,
+                                                  java.time.LocalDateTime finIntervalo) {
+        java.time.LocalDateTime entradaVisita = visita.getFechaEntrada();
+        java.time.LocalDateTime salidaVisita = visita.getFechaSalida();
+        
+        // Si no hay entrada registrada, no se cuenta
+        if (entradaVisita == null) {
+            return false;
+        }
+        
+        // Si no hay salida (aún dentro), usar el fin del día como límite
+        if (salidaVisita == null) {
+            salidaVisita = finIntervalo.plusDays(1); // Fin del día siguiente
+        }
+        
+        // Verificar superposición:
+        // La visita se superpone si:
+        // - La entrada es antes o durante el intervalo Y
+        // - La salida es durante o después del intervalo
+        boolean entraDuranteOAntes = !entradaVisita.isAfter(finIntervalo);
+        boolean saleDuranteODespues = !salidaVisita.isBefore(inicioIntervalo);
+        
+        return entraDuranteOAntes && saleDuranteODespues;
+    }
+    
+    /**
      * Genera estadísticas generales del sistema.
      * 
      * Permisos: requiere "generar_reporte"

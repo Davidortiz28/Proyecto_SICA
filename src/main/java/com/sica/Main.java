@@ -704,6 +704,7 @@ public class Main {
             System.out.println("3. Reporte de Incidentes");
             System.out.println("4. Personas Bloqueadas");
             System.out.println("5. Estadísticas Generales");
+            System.out.println("6. ⭐ Reporte de Ocupación por Hora");
             System.out.println("0. Volver\n");
             
             System.out.print("Seleccione una opción: ");
@@ -715,12 +716,48 @@ public class Main {
                 case "3": reporteIncidentes(); break;
                 case "4": reportePersonasBloqueadas(); break;
                 case "5": estadisticasGenerales(); break;
+                case "6": reporteOcupacionPorHora(); break;
                 case "0": return;
                 default:
                     System.out.println("\n❌ Opción no válida");
                     pausa();
             }
         }
+    }
+    
+    private static void reporteOcupacionPorHora() {
+        limpiarPantalla();
+        System.out.println("═══ REPORTE DE OCUPACIÓN POR HORA ═══\n");
+        
+        System.out.print("Ingrese la fecha a analizar (dd/MM/yyyy): ");
+        String fechaInput = scanner.nextLine().trim();
+        
+        try {
+            java.time.format.DateTimeFormatter formatter = 
+                java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            java.time.LocalDate fecha = java.time.LocalDate.parse(fechaInput, formatter);
+            
+            // Validar que no sea futura
+            if (fecha.isAfter(java.time.LocalDate.now())) {
+                System.out.println("\n⚠️  ADVERTENCIA: La fecha es futura, los datos pueden estar incompletos.");
+                System.out.print("¿Desea continuar? (S/N): ");
+                String conf = scanner.nextLine().trim().toUpperCase();
+                if (!conf.equals("S") && !conf.equals("SI")) {
+                    return;
+                }
+            }
+            
+            System.out.println("\n⏳ Generando reporte...\n");
+            String reporte = reporteService.reporteOcupacionPorHora(fecha);
+            System.out.println(reporte);
+            
+        } catch (java.time.format.DateTimeParseException e) {
+            System.out.println("\n❌ ERROR: Formato de fecha inválido. Use dd/MM/yyyy");
+        } catch (SicaException e) {
+            System.out.println("\n❌ ERROR: " + e.getMessage());
+        }
+        
+        pausa();
     }
     
     private static void reportePersonasBloqueadas() {
